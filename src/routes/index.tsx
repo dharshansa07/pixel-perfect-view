@@ -47,9 +47,11 @@ function Home() {
   const { data: cats } = useCategories();
   const recentIds = useRecentlyViewed();
   const featured = products?.find((p) => p.is_featured);
+  const featuredProducts = products?.filter((p) => p.is_featured).slice(0, 4);
   const trending = products?.filter((p) => p.is_trending).slice(0, 4);
-  const best = [...(products ?? [])].sort((a, b) => b.rating_count - a.rating_count).slice(0, 4);
-  const arrivals = [...(products ?? [])].reverse().slice(0, 4);
+  const designatedBestSellers = products?.filter((p) => p.is_best_seller) ?? [];
+  const best = (designatedBestSellers.length ? designatedBestSellers : [...(products ?? [])].sort((a, b) => b.rating_count - a.rating_count)).slice(0, 4);
+  const arrivals = [...(products ?? [])].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 4);
   const recent = recentIds.map((id) => products?.find((p) => p.id === id)).filter(Boolean).slice(0, 4) as NonNullable<typeof products>;
 
   return (
@@ -106,6 +108,7 @@ function Home() {
         </div>
       </Section>
 
+      <Section title="Featured picks" link><ProductGrid products={featuredProducts} loading={isLoading} /></Section>
       <Section title="Trending now" link><ProductGrid products={trending} loading={isLoading} /></Section>
 
       <section className="mx-auto mt-20 max-w-7xl px-4">

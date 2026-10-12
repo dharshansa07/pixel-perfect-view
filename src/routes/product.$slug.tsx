@@ -40,6 +40,11 @@ function ProductPage() {
 
   const off = discountPct(product);
   const related = products!.filter((p) => p.category_id === product.category_id && p.id !== product.id).slice(0, 4);
+  const variantData = typeof product.variants === "object" && product.variants !== null && !Array.isArray(product.variants)
+    ? product.variants
+    : {};
+  const variantGroups = Object.entries(variantData)
+    .filter((entry): entry is [string, string[]] => Array.isArray(entry[1]) && entry[1].every((value) => typeof value === "string"));
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
@@ -58,6 +63,20 @@ function ProductPage() {
             {off > 0 && <><span className="text-lg text-muted-foreground line-through">{money(product.compare_at_price!)}</span><span className="bg-gradient-brand rounded-full px-2 py-0.5 text-xs font-bold text-primary-foreground">Save {off}%</span></>}
           </div>
           <p className="mt-6 text-muted-foreground">{product.description}</p>
+          {variantGroups.length > 0 && (
+            <div className="mt-5 space-y-3">
+              {variantGroups.map(([name, options]) => (
+                <div key={name}>
+                  <p className="text-sm font-medium capitalize">{name}</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {options.map((option) => (
+                      <span key={option} className="rounded-full border px-3 py-1 text-sm">{option}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
           <p className={cn("mt-4 text-sm font-medium", product.stock > 0 ? "text-success" : "text-destructive")}>
             {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
           </p>

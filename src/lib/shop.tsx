@@ -56,6 +56,19 @@ export function useProducts() {
     queryFn: async () => {
       const { data, error } = await supabase.from("products").select("*").order("created_at");
       if (error) throw error;
+      return data.filter((product) => product.is_active !== false);
+    },
+  });
+}
+
+export function useIsAdmin() {
+  const { session } = useAuth();
+  return useQuery({
+    queryKey: ["user", "is-admin", session?.user.id],
+    enabled: !!session,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("is_admin");
+      if (error) throw error;
       return data;
     },
   });

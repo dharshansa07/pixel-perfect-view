@@ -184,14 +184,19 @@ export type Database = {
           description: string
           id: string
           image: string
+          availability_status: string
+          is_active: boolean
           is_featured: boolean
+          is_best_seller: boolean
           is_trending: boolean
           name: string
           price: number
           rating: number
           rating_count: number
+          sku: string
           slug: string
           stock: number
+          variants: Json
         }
         Insert: {
           brand?: string
@@ -201,14 +206,18 @@ export type Database = {
           description?: string
           id?: string
           image: string
+          is_active?: boolean
           is_featured?: boolean
+          is_best_seller?: boolean
           is_trending?: boolean
           name: string
           price: number
           rating?: number
           rating_count?: number
+          sku: string
           slug: string
           stock?: number
+          variants?: Json
         }
         Update: {
           brand?: string
@@ -218,14 +227,18 @@ export type Database = {
           description?: string
           id?: string
           image?: string
+          is_active?: boolean
           is_featured?: boolean
+          is_best_seller?: boolean
           is_trending?: boolean
           name?: string
           price?: number
           rating?: number
           rating_count?: number
+          sku?: string
           slug?: string
           stock?: number
+          variants?: Json
         }
         Relationships: [
           {
@@ -315,6 +328,10 @@ export type Database = {
           _postal_code: string
         }
         Returns: string
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {
