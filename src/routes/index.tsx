@@ -144,11 +144,11 @@ function Newsletter() {
   const [busy, setBusy] = useState(false);
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return toast.error("Please enter a valid email");
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { toast.error("Please enter a valid email"); return; }
     setBusy(true);
     const { error } = await supabase.from("newsletter_subscribers").insert({ email: email.toLowerCase() });
     setBusy(false);
-    if (error && error.code !== "23505") return toast.error("Couldn't subscribe, please try again");
+    if (error && error.code !== "23505") { toast.error("Couldn't subscribe, please try again"); return; }
     toast.success("You're subscribed!");
     setEmail("");
   };

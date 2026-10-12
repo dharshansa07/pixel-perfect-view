@@ -29,7 +29,7 @@ const schema = z.object({
   city: z.string().trim().min(2, "Enter your city").max(80),
   postal_code: z.string().trim().min(3, "Enter a postal code").max(12),
   phone: z.string().trim().regex(/^[+\d\s()-]{7,20}$/, "Enter a valid phone number"),
-  card: z.string().replace(/\s/g, "").regex(/^\d{16}$/, "Card number must be 16 digits"),
+  card: z.string().transform((s) => s.replace(/\s/g, "")).pipe(z.string().regex(/^\d{16}$/, "Card number must be 16 digits")),
 });
 const fields: [keyof z.infer<typeof schema>, string][] = [
   ["full_name", "Full name"], ["address", "Address"], ["city", "City"], ["postal_code", "Postal code"], ["phone", "Phone"],
@@ -62,7 +62,7 @@ function Checkout() {
       _full_name: d.full_name, _address: d.address, _city: d.city, _postal_code: d.postal_code, _phone: d.phone,
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Order placed!");
     qc.invalidateQueries({ queryKey: ["user"] });
     qc.invalidateQueries({ queryKey: ["products"] });
@@ -84,8 +84,8 @@ function Checkout() {
         <p className="text-xs text-muted-foreground">No real charge is made. Use any 16 digits, e.g. 4242 4242 4242 4242.</p>
         <div className="space-y-1">
           <Label htmlFor="card">Card number</Label>
-          <Input id="card" name="card" inputMode="numeric" placeholder="4242 4242 4242 4242" aria-invalid={!!errors.card} />
-          {errors.card && <p className="text-xs text-destructive">{errors.card}</p>}
+          <Input id="card" name="card" inputMode="numeric" placeholder="4242 4242 4242 4242" aria-invalid={!!errors["card"]} />
+          {errors["card"] && <p className="text-xs text-destructive">{errors["card"]}</p>}
         </div>
         <Button variant="hero" size="lg" className="w-full" disabled={busy || !cart?.length}>
           {busy ? "Placing order…" : `Pay ${money(subtotal + shipping)}`}
