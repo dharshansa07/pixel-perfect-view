@@ -90,7 +90,7 @@ export function SiteHeader() {
   );
 }
 
-function IconLink({ to, label, badge, children }: { to: "/cart" | "/wishlist" | "/orders" | "/auth"; label: string; badge?: number; children: React.ReactNode }) {
+function IconLink({ to, label, badge, children }: { to: "/cart" | "/wishlist" | "/orders" | "/auth"; label: string; badge?: number | undefined; children: React.ReactNode }) {
   return (
     <Link to={to} aria-label={label} className="relative grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
       {children}

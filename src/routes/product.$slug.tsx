@@ -101,15 +101,15 @@ function Reviews({ productId }: { productId: string }) {
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (!session) return;
-    if (comment.trim().length < 5) return toast.error("Please write at least a few words");
+    if (comment.trim().length < 5) { toast.error("Please write at least a few words"); return; }
     const { error } = await supabase.from("reviews").insert({
       product_id: productId,
       user_id: session.user.id,
-      author_name: session.user.user_metadata?.full_name ?? session.user.email?.split("@")[0] ?? "Customer",
+      author_name: session.user.user_metadata?.["full_name"] ?? session.user.email?.split("@")[0] ?? "Customer",
       rating,
       comment: comment.trim().slice(0, 1000),
     });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Thanks for your review!");
     setComment("");
     qc.invalidateQueries({ queryKey: ["reviews", productId] });
